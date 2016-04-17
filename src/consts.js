@@ -1,0 +1,22 @@
+
+const SET_URL = 'SET_URL'
+const SET_LIST_POS = 'SET_LIST_POS'
+const SET_SUGGESTIONS = 'SET_SUGGESTIONS'
+const RESET_SUGGESTIONS = 'RESET_SUGGESTIONS'
+
+const INPUT_THRESHOLD = 2
+const KEY = {
+  UP: 38,
+  DOWN: 40,
+  ENTER: 13,
+  TAB: 9,
+  ESC: 27
+}
+
+export default {
+  SET_URL,
+  SET_LIST_POS,
+  SET_SUGGESTIONS,
+  INPUT_THRESHOLD,
+  KEY,
+}
