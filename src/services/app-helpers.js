@@ -14,7 +14,7 @@ export default {
 
 function handleArrowKeys(key) {
   let {suggestions, listPos} = store.getState()
-  const max = suggestions.length
+  const max = suggestions.length - 1
 
   if (key === KEY.UP && listPos > 0) {
     listPos--

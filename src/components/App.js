@@ -43,11 +43,13 @@ function App(state) {
   // Handle arrow keys
   // ----
   const keyDownStream = flyd.stream()
-  flyd.transduce(R.compose(
+  const arrowStream = flyd.transduce(R.compose(
     R.map(ev => ev.keyCode),
     R.filter(valueIn([KEY.UP, KEY.DOWN])),
-    R.map(handleArrowKeys)
   ), keyDownStream)
+  flyd.on(_ => keyDownStream().preventDefault(), arrowStream)
+  flyd.on(handleArrowKeys, arrowStream)
+
 
   // Handle form submission
   // ----
@@ -61,7 +63,11 @@ function App(state) {
 
   // Render our template
   // ----
-  return <div>
+  const Suggestion = (title, index) => {
+    return <li className={index === listPos && 'active'}>{title}</li>
+  }
+
+  return <div id="app">
     <form name="search-or-create" onsubmit={submitStream}>
       <input 
         type="text" 
@@ -71,6 +77,8 @@ function App(state) {
         onkeydown={keyDownStream} />
     </form>
 
-    {suggestions.map(x => <p>{x}</p>)}
+    <ul id="suggestions">
+      {suggestions.map(Suggestion)}
+    </ul>
   </div>
 }
