@@ -4,17 +4,23 @@ import flyd from 'flyd'
 import afterSilence from 'flyd/module/aftersilence'
 
 import store from '../store.js'
-import {INPUT_THRESHOLD, KEY, RESET_SUGGESTIONS} from '../consts.js'
-import {generic} from '../actions.js'
+import {generic, createNote, loadNote} from '../actions.js'
+import {
+  INPUT_THRESHOLD, 
+  KEY, 
+  RESET_SUGGESTIONS, 
+  CLEAR_LOADED_NOTE_TITLE
+} from '../consts.js'
 
 import {handleArrowKeys, searchTitles} from '../services/app-helpers.js'
 
 export default App
 
+
 const valueIn = R.curryN(2, (whitelist, val) => R.contains(val, whitelist))
 
 function App(state) {
-  let {listPos, suggestions, titles} = state
+  let {listPos, suggestions, titles, loadedNoteTitle} = state
   suggestions = (suggestions.length) ? suggestions : titles
 
   console.debug('App', state)
@@ -25,6 +31,9 @@ function App(state) {
 
   // get value from dom event
   const inputValue = flyd.map(ev => ev.target.value, inputStream)
+  if (loadedNoteTitle) {
+    flyd.on(_ => store.dispatch(generic(CLEAR_LOADED_NOTE_TITLE)), inputValue)
+  }
 
   // filter and debounce input to search function
   flyd.transduce(R.compose(
@@ -54,11 +63,14 @@ function App(state) {
   // Handle form submission
   // ----
   const submitStream = flyd.stream()
-  flyd.on(ev => ev.preventDefault(), submitStream)
-  flyd.transduce(R.compose(
-    R.map(_ => inputValue()), // we want the inputValue not the form event
-    R.map(val => console.debug('sub', val)),
-  ), submitStream)
+  flyd.on(ev => {
+    ev.preventDefault()
+    if (listPos === -1) {
+      store.dispatch(createNote(inputValue()))
+    } else {
+      store.dispatch(loadNote(suggestions[listPos]))
+    }
+  }, submitStream)
 
 
   // Render our template
@@ -72,7 +84,7 @@ function App(state) {
       <input 
         type="text" 
         name="soc-input" 
-        value={inputValue()}
+        value={loadedNoteTitle || inputValue()}
         oninput={inputStream}
         onkeydown={keyDownStream} />
     </form>
