@@ -1,7 +1,6 @@
 import {
   CREATE_NOTE, 
   LOAD_NOTE, 
-  SET_URL, 
 } from './consts.js'
 
 // actions can be anything. in our case we'll stick with objects
@@ -9,7 +8,6 @@ import {
 export default {
   createNote,
   loadNote,
-  setUrl,
   generic,
 }
 
@@ -27,16 +25,6 @@ function loadNote(title) {
   return {
     type: LOAD_NOTE,
     data: title,
-  }
-}
-
-function setUrl(url) {
-  if (url !== window.location.pathname) {
-    window.history.pushState({}, '', url)
-  }
-  return {
-    type: SET_URL,
-    data: url,
   }
 }
 
