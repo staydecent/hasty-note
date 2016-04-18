@@ -1,4 +1,9 @@
-import h from 'virtual-dom/h'
+import vdomHyperscript from 'virtual-dom/h'
+import hyperscriptHook from 'virtual-hyperscript-hook'
+
+const h = hyperscriptHook(vdomHyperscript)
+
+import nextTick from 'next-tick'
 import R from 'ramda'
 import flyd from 'flyd'
 import afterSilence from 'flyd/module/aftersilence'
@@ -13,6 +18,8 @@ import {
 } from '../consts.js'
 
 import {handleArrowKeys, searchTitles} from '../services/app-helpers.js'
+
+import Suggestions from './Suggestions.js'
 
 export default App
 
@@ -75,9 +82,7 @@ function App(state) {
 
   // Render our template
   // ----
-  const Suggestion = (title, index) => {
-    return <li className={index === listPos && 'active'}>{title}</li>
-  }
+  const focusHook = (elm) => nextTick(() => elm.focus())
 
   return <div id="app">
     <form name="search-or-create" onsubmit={submitStream}>
@@ -86,11 +91,10 @@ function App(state) {
         name="soc-input" 
         value={loadedNoteTitle || inputValue()}
         oninput={inputStream}
-        onkeydown={keyDownStream} />
+        onkeydown={keyDownStream}
+        hook={focusHook} />
     </form>
 
-    <ul id="suggestions">
-      {suggestions.map(Suggestion)}
-    </ul>
+    <Suggestions suggestions={suggestions} pos={listPos} />
   </div>
 }

@@ -37,7 +37,9 @@
     "express": "^4.13.4",
     "flyd": "^0.2.2",
     "fuzzy": "^0.1.1",
+    "next-tick": "^0.2.2",
     "ramda": "^0.21.0",
+    "virtual-hyperscript-hook": "^1.0.0",
     "watchify": "^3.7.0"
   }
 }
